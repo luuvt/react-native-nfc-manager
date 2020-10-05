@@ -1,4 +1,4 @@
-package com.justinribeiro.demo.apps.hostcardemulation;
+package community.revteltech.nfc;
 
 import android.content.Context;
 import android.content.Intent;
@@ -122,7 +122,7 @@ public class MyHostApduService extends HostApduService {
     };
 
     private byte[] NDEF_URI_BYTES;
-    private byte[] NDEF_URI_LEN = 0;
+    private byte[] NDEF_URI_LEN;
 
     @Override
     public void onCreate() {
@@ -144,9 +144,6 @@ public class MyHostApduService extends HostApduService {
             NDEF_URI_BYTES = NDEF_URI.toByteArray();
             NDEF_URI_LEN = BigInteger.valueOf(NDEF_URI_BYTES.length).toByteArray();
         }
-
-        Log.i(TAG, "onStartCommand() | NDEF" + NDEF_URI.toString());
-
         return 0;
     }
 
@@ -157,37 +154,37 @@ public class MyHostApduService extends HostApduService {
         // The following flow is based on Appendix E "Example of Mapping Version 2.0 Command Flow"
         // in the NFC Forum specification
         //
-        Log.i(TAG, "processCommandApdu() | incoming commandApdu: " + utils.bytesToHex(commandApdu));
+        Log.i(TAG, "processCommandApdu() | incoming commandApdu: " + Util.bytesToHex(commandApdu));
 
         //
         // First command: NDEF Tag Application select (Section 5.5.2 in NFC Forum spec)
         //
-        if (utils.isEqual(APDU_SELECT, commandApdu)) {
-            Log.i(TAG, "APDU_SELECT triggered. Our Response: " + utils.bytesToHex(A_OKAY));
+        if (Util.isEqual(APDU_SELECT, commandApdu)) {
+            Log.i(TAG, "APDU_SELECT triggered. Our Response: " + Util.bytesToHex(A_OKAY));
             return A_OKAY;
         }
-        else if (utils.isEqual(APDU_SELECT_1, commandApdu)) {
-            Log.i(TAG, "APDU_SELECT triggered. Our Response: " + utils.bytesToHex(A_OKAY));
+        else if (Util.isEqual(APDU_SELECT_1, commandApdu)) {
+            Log.i(TAG, "APDU_SELECT triggered. Our Response: " + Util.bytesToHex(A_OKAY));
             return A_OKAY;
         }
-        else if (utils.isEqual(APDU_SELECT_2, commandApdu)) {
-            Log.i(TAG, "APDU_SELECT triggered. Our Response: " + utils.bytesToHex(A_OKAY));
+        else if (Util.isEqual(APDU_SELECT_2, commandApdu)) {
+            Log.i(TAG, "APDU_SELECT triggered. Our Response: " + Util.bytesToHex(A_OKAY));
             return A_OKAY;
         }
 
         //
         // Second command: Capability Container select (Section 5.5.3 in NFC Forum spec)
         //
-        if (utils.isEqual(CAPABILITY_CONTAINER, commandApdu)) {
-            Log.i(TAG, "CAPABILITY_CONTAINER triggered. Our Response: " + utils.bytesToHex(A_OKAY));
+        if (Util.isEqual(CAPABILITY_CONTAINER, commandApdu)) {
+            Log.i(TAG, "CAPABILITY_CONTAINER triggered. Our Response: " + Util.bytesToHex(A_OKAY));
             return A_OKAY;
         }
 
         //
         // Third command: ReadBinary data from CC file (Section 5.5.4 in NFC Forum spec)
         //
-        if (utils.isEqual(READ_CAPABILITY_CONTAINER, commandApdu) && !READ_CAPABILITY_CONTAINER_CHECK) {
-            Log.i(TAG, "READ_CAPABILITY_CONTAINER triggered. Our Response: " + utils.bytesToHex(READ_CAPABILITY_CONTAINER_RESPONSE));
+        if (Util.isEqual(READ_CAPABILITY_CONTAINER, commandApdu) && !READ_CAPABILITY_CONTAINER_CHECK) {
+            Log.i(TAG, "READ_CAPABILITY_CONTAINER triggered. Our Response: " + Util.bytesToHex(READ_CAPABILITY_CONTAINER_RESPONSE));
             READ_CAPABILITY_CONTAINER_CHECK = true;
             return READ_CAPABILITY_CONTAINER_RESPONSE;
         }
@@ -195,15 +192,15 @@ public class MyHostApduService extends HostApduService {
         //
         // Fourth command: NDEF Select command (Section 5.5.5 in NFC Forum spec)
         //
-        if (utils.isEqual(NDEF_SELECT, commandApdu)) {
-            Log.i(TAG, "NDEF_SELECT triggered. Our Response: " + utils.bytesToHex(A_OKAY));
+        if (Util.isEqual(NDEF_SELECT, commandApdu)) {
+            Log.i(TAG, "NDEF_SELECT triggered. Our Response: " + Util.bytesToHex(A_OKAY));
             return A_OKAY;
         }
 
         //
         // Fifth command:  ReadBinary, read NLEN field
         //
-        if (utils.isEqual(NDEF_READ_BINARY_NLEN, commandApdu)) {
+        if (Util.isEqual(NDEF_READ_BINARY_NLEN, commandApdu)) {
 
             byte[] start = {
                     (byte)0x00
@@ -217,7 +214,7 @@ public class MyHostApduService extends HostApduService {
             System.arraycopy(A_OKAY, 0, response, start.length + NDEF_URI_LEN.length, A_OKAY.length);
 
             Log.i(TAG, response.toString());
-            Log.i(TAG, "NDEF_READ_BINARY_NLEN triggered. Our Response: " + utils.bytesToHex(response));
+            Log.i(TAG, "NDEF_READ_BINARY_NLEN triggered. Our Response: " + Util.bytesToHex(response));
 
             return response;
         }
@@ -225,7 +222,7 @@ public class MyHostApduService extends HostApduService {
         //
         // Sixth command: ReadBinary, get NDEF data
         //
-        if (utils.isEqual(NDEF_READ_BINARY_GET_NDEF, commandApdu)) {
+        if (Util.isEqual(NDEF_READ_BINARY_GET_NDEF, commandApdu)) {
             Log.i(TAG, "processCommandApdu() | NDEF_READ_BINARY_GET_NDEF triggered");
 
             byte[] start = {
@@ -240,8 +237,7 @@ public class MyHostApduService extends HostApduService {
             System.arraycopy(NDEF_URI_BYTES, 0, response, start.length + NDEF_URI_LEN.length, NDEF_URI_BYTES.length);
             System.arraycopy(A_OKAY, 0, response, start.length + NDEF_URI_LEN.length + NDEF_URI_BYTES.length, A_OKAY.length);
 
-            Log.i(TAG, NDEF_URI.toString());
-            Log.i(TAG, "NDEF_READ_BINARY_GET_NDEF triggered. Our Response: " + utils.bytesToHex(response));
+            Log.i(TAG, "NDEF_READ_BINARY_GET_NDEF triggered. Our Response: " + Util.bytesToHex(response));
 
             READ_CAPABILITY_CONTAINER_CHECK = false;
             return response;
