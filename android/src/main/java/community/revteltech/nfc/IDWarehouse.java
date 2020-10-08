@@ -5,11 +5,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class DataApduService {
+public class IDWarehouse {
 
     private static final String PREF_ID = "ID";
     private static final String DEFAULT_ID = "default";
-    private static final String TAG = "DataApduService";
+    private static final String TAG = "IDWarehouse";
     private static String sID = null;
     private static final Object sIDLock = new Object();
 
