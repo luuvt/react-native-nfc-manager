@@ -260,8 +260,8 @@ public class MyHostApduService extends HostApduService {
     private void getData() {
         String data = IDWarehouse.GetID(this.getApplicationContext());
         if (data.getBytes()) {
-            NDEF_URI_BYTES = data.getBytes();
-            NDEF_URI_LEN = BigInteger.valueOf(NDEF_URI_BYTES.length).toByteArray();
+            NDEF_BYTES = data.getBytes();
+            NDEF_LEN = BigInteger.valueOf(NDEF_BYTES.length).toByteArray();
         }
     }
 }
