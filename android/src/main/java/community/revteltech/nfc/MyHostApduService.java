@@ -121,8 +121,13 @@ public class MyHostApduService extends HostApduService {
             (byte)0x04
     };
 
-    private byte[] NDEF_URI_BYTES;
-    private byte[] NDEF_URI_LEN;
+    private static final byte[] UNKNOWN_CMD_SW = {
+        (byte)0X00,
+        (byte)0x00
+    };
+
+    private byte[] NDEF_BYTES;
+    private byte[] NDEF_LEN;
 
     @Override
     public void onCreate() {
@@ -132,17 +137,10 @@ public class MyHostApduService extends HostApduService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        if (intent.hasExtra("ndefMessage")) {
-            NdefRecord NDEF_URI = new NdefRecord(
-                    NdefRecord.TNF_WELL_KNOWN,
-                    NdefRecord.RTD_URI,
-                    NDEF_ID,
-                    intent.getStringExtra("ndefMessage").getBytes(Charset.forName("UTF-8"))
-            );
-
-            NDEF_URI_BYTES = NDEF_URI.toByteArray();
-            NDEF_URI_LEN = BigInteger.valueOf(NDEF_URI_BYTES.length).toByteArray();
+        String data = IDWarehouse.GetID(this.getApplicationContext());
+        if (data.getBytes()) {
+            NDEF_BYTES = data.getBytes();
+            NDEF_LEN = BigInteger.valueOf(NDEF_BYTES.length).toByteArray();
         }
         return 0;
     }
@@ -202,16 +200,18 @@ public class MyHostApduService extends HostApduService {
         //
         if (Util.isEqual(NDEF_READ_BINARY_NLEN, commandApdu)) {
 
+            getData();
+
             byte[] start = {
-                    (byte)0x00
+                (byte)0x00
             };
 
             // Build our response
-            byte[] response = new byte[start.length + NDEF_URI_LEN.length + A_OKAY.length];
+            byte[] response = new byte[start.length + NDEF_LEN.length + A_OKAY.length];
 
             System.arraycopy(start, 0, response, 0, start.length);
-            System.arraycopy(NDEF_URI_LEN, 0, response, start.length, NDEF_URI_LEN.length);
-            System.arraycopy(A_OKAY, 0, response, start.length + NDEF_URI_LEN.length, A_OKAY.length);
+            System.arraycopy(NDEF_LEN, 0, response, start.length, NDEF_LEN.length);
+            System.arraycopy(A_OKAY, 0, response, start.length + NDEF_LEN.length, A_OKAY.length);
 
             Log.i(TAG, response.toString());
             Log.i(TAG, "NDEF_READ_BINARY_NLEN triggered. Our Response: " + Util.bytesToHex(response));
@@ -225,17 +225,19 @@ public class MyHostApduService extends HostApduService {
         if (Util.isEqual(NDEF_READ_BINARY_GET_NDEF, commandApdu)) {
             Log.i(TAG, "processCommandApdu() | NDEF_READ_BINARY_GET_NDEF triggered");
 
+            getData();
+
             byte[] start = {
-                    (byte)0x00
+                (byte)0x00
             };
 
             // Build our response
-            byte[] response = new byte[start.length + NDEF_URI_LEN.length + NDEF_URI_BYTES.length + A_OKAY.length];
+            byte[] response = new byte[start.length + NDEF_LEN.length + NDEF_BYTES.length + A_OKAY.length];
 
             System.arraycopy(start, 0, response, 0, start.length);
-            System.arraycopy(NDEF_URI_LEN, 0, response, start.length, NDEF_URI_LEN.length);
-            System.arraycopy(NDEF_URI_BYTES, 0, response, start.length + NDEF_URI_LEN.length, NDEF_URI_BYTES.length);
-            System.arraycopy(A_OKAY, 0, response, start.length + NDEF_URI_LEN.length + NDEF_URI_BYTES.length, A_OKAY.length);
+            System.arraycopy(NDEF_LEN, 0, response, start.length, NDEF_LEN.length);
+            System.arraycopy(NDEF_BYTES, 0, response, start.length + NDEF_LEN.length, NDEF_BYTES.length);
+            System.arraycopy(A_OKAY, 0, response, start.length + NDEF_LEN.length + NDEF_BYTES.length, A_OKAY.length);
 
             Log.i(TAG, "NDEF_READ_BINARY_GET_NDEF triggered. Our Response: " + Util.bytesToHex(response));
 
@@ -247,11 +249,19 @@ public class MyHostApduService extends HostApduService {
         // We're doing something outside our scope
         //
         Log.wtf(TAG, "processCommandApdu() | I don't know what's going on!!!.");
-        return "Can I help you?".getBytes();
+        return UNKNOWN_CMD_SW;
     }
 
     @Override
     public void onDeactivated(int reason) {
         Log.i(TAG, "onDeactivated() Fired! Reason: " + reason);
+    }
+
+    private void getData() {
+        String data = IDWarehouse.GetID(this.getApplicationContext());
+        if (data.getBytes()) {
+            NDEF_URI_BYTES = data.getBytes();
+            NDEF_URI_LEN = BigInteger.valueOf(NDEF_URI_BYTES.length).toByteArray();
+        }
     }
 }

@@ -459,7 +459,9 @@ class NfcManager {
 
   cancelNdefWrite = () => callNative('cancelNdefWrite');
 
-  startApduService = (data) => callNative('startApduService', [data]);
+  setNdefMessageApdu = (bytes) => callNative('setNdefMessageApdu', [bytes]);
+
+  startApduService = () => callNative('startApduService');
     
   stopApduService = () => callNative('stopApduService');
 }

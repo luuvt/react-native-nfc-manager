@@ -116,9 +116,11 @@ declare module 'react-native-nfc-manager' {
 
     unregisterTagEvent(): Promise<void>;
 
+    setNdefMessageApdu(bytes: number[]): Promise<void>;
+
     startApduService(): Promise<void>;
     
-    stopApduService(data: string): Promise<void>;
+    stopApduService(): Promise<void>;
 
     setEventListener(name: NfcEvents, callback: OnNfcEvents | null): void;
 

@@ -932,11 +932,17 @@ class NfcManager extends ReactContextBaseJavaModule implements ActivityEventList
     }
 
     @ReactMethod
-    public void startApduService(String data) {
+    public void setNdefMessageApdu(ReadableArray rnArray, Callback callback) {
+        byte[] bytes = rnArrayToBytes(rnArray);
+        String content = Util.ByteArrayToHexString(bytes);
+        IDWarehouse.SetID(this.reactContext, content);
+        callback.invoke();
+    }
+
+    @ReactMethod
+    public void startApduService() {
         // Starting the host apdu service
-        Intent intent = new Intent(this.reactContext, MyHostApduService.class);
-        intent.putExtra("ndefMessage", data);
-        this.reactContext.startService(intent);
+        this.reactContext.startService(new Intent(this.reactContext, MyHostApduService.class);
     }
 
     @ReactMethod
