@@ -138,10 +138,8 @@ public class MyHostApduService extends HostApduService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String data = IDWarehouse.GetID(this.getApplicationContext());
-        if (data.getBytes()) {
-            NDEF_BYTES = data.getBytes();
-            NDEF_LEN = BigInteger.valueOf(NDEF_BYTES.length).toByteArray();
-        }
+        NDEF_BYTES = data.getBytes();
+        NDEF_LEN = BigInteger.valueOf(NDEF_BYTES.length).toByteArray();
         return 0;
     }
 
@@ -259,9 +257,7 @@ public class MyHostApduService extends HostApduService {
 
     private void getData() {
         String data = IDWarehouse.GetID(this.getApplicationContext());
-        if (data.getBytes()) {
-            NDEF_BYTES = data.getBytes();
-            NDEF_LEN = BigInteger.valueOf(NDEF_BYTES.length).toByteArray();
-        }
+        NDEF_BYTES = data.getBytes();
+        NDEF_LEN = BigInteger.valueOf(NDEF_BYTES.length).toByteArray();
     }
 }
