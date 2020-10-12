@@ -44,30 +44,30 @@ public class MyHostApduService extends HostApduService {
     };
 
     private static final byte[] APDU_SELECT_2 = {
-            (byte)0x00, // CLA	- Class - Class of instruction
-            (byte)0xA4, // INS	- Instruction - Instruction code
-            (byte)0x04, // P1	- Parameter 1 - Instruction parameter 1
-            (byte)0x00, // P2	- Parameter 2 - Instruction parameter 2
-            (byte)0x07, // Lc field	- Number of bytes present in the data field of the command
-            (byte)0xD2, (byte)0x76, (byte)0x00, (byte)0x00, (byte)0x85, (byte)0x01, (byte)0x01, // NDEF Tag Application name
-            (byte)0x00  // Le field	- Maximum number of bytes expected in the data field of the response to the command
+        (byte)0x00, // CLA	- Class - Class of instruction
+        (byte)0xA4, // INS	- Instruction - Instruction code
+        (byte)0x04, // P1	- Parameter 1 - Instruction parameter 1
+        (byte)0x00, // P2	- Parameter 2 - Instruction parameter 2
+        (byte)0x07, // Lc field	- Number of bytes present in the data field of the command
+        (byte)0xD2, (byte)0x76, (byte)0x00, (byte)0x00, (byte)0x85, (byte)0x01, (byte)0x01, // NDEF Tag Application name
+        (byte)0x00  // Le field	- Maximum number of bytes expected in the data field of the response to the command
     };
 
     private static final byte[] CAPABILITY_CONTAINER = {
-            (byte)0x00, // CLA	- Class - Class of instruction
-            (byte)0xa4, // INS	- Instruction - Instruction code
-            (byte)0x00, // P1	- Parameter 1 - Instruction parameter 1
-            (byte)0x0c, // P2	- Parameter 2 - Instruction parameter 2
-            (byte)0x02, // Lc field	- Number of bytes present in the data field of the command
-            (byte)0xe1, (byte)0x03 // file identifier of the CC file
+        (byte)0x00, // CLA	- Class - Class of instruction
+        (byte)0xa4, // INS	- Instruction - Instruction code
+        (byte)0x00, // P1	- Parameter 1 - Instruction parameter 1
+        (byte)0x0c, // P2	- Parameter 2 - Instruction parameter 2
+        (byte)0x02, // Lc field	- Number of bytes present in the data field of the command
+        (byte)0xe1, (byte)0x03 // file identifier of the CC file
     };
 
     private static final byte[] READ_CAPABILITY_CONTAINER = {
-            (byte)0x00, // CLA	- Class - Class of instruction
-            (byte)0xb0, // INS	- Instruction - Instruction code
-            (byte)0x00, // P1	- Parameter 1 - Instruction parameter 1
-            (byte)0x00, // P2	- Parameter 2 - Instruction parameter 2
-            (byte)0x0f  // Lc field	- Number of bytes present in the data field of the command
+        (byte)0x00, // CLA	- Class - Class of instruction
+        (byte)0xb0, // INS	- Instruction - Instruction code
+        (byte)0x00, // P1	- Parameter 1 - Instruction parameter 1
+        (byte)0x00, // P2	- Parameter 2 - Instruction parameter 2
+        (byte)0x0f  // Lc field	- Number of bytes present in the data field of the command
     };
 
     // In the scenario that we have done a CC read, the same byte[] match
@@ -75,50 +75,50 @@ public class MyHostApduService extends HostApduService {
     private boolean READ_CAPABILITY_CONTAINER_CHECK = false;
 
     private static final byte[] READ_CAPABILITY_CONTAINER_RESPONSE = {
-            (byte)0x00, (byte)0x0F, // CCLEN length of the CC file
-            (byte)0x20, // Mapping Version 2.0
-            (byte)0x00, (byte)0x3B, // MLe maximum 59 bytes R-APDU data size
-            (byte)0x00, (byte)0x34, // MLc maximum 52 bytes C-APDU data size
-            (byte)0x04, // T field of the NDEF File Control TLV
-            (byte)0x06, // L field of the NDEF File Control TLV
-            (byte)0xE1, (byte)0x04, // File Identifier of NDEF file
-            (byte)0x00, (byte)0x32, // Maximum NDEF file size of 50 bytes
-            (byte)0x00, // Read access without any security
-            (byte)0x00, // Write access without any security
-            (byte)0x90, (byte)0x00 // A_OKAY
+        (byte)0x00, (byte)0x0F, // CCLEN length of the CC file
+        (byte)0x20, // Mapping Version 2.0
+        (byte)0x00, (byte)0x3B, // MLe maximum 59 bytes R-APDU data size
+        (byte)0x00, (byte)0x34, // MLc maximum 52 bytes C-APDU data size
+        (byte)0x04, // T field of the NDEF File Control TLV
+        (byte)0x06, // L field of the NDEF File Control TLV
+        (byte)0xE1, (byte)0x04, // File Identifier of NDEF file
+        (byte)0x00, (byte)0x32, // Maximum NDEF file size of 50 bytes
+        (byte)0x00, // Read access without any security
+        (byte)0x00, // Write access without any security
+        (byte)0x90, (byte)0x00 // A_OKAY
     };
 
     private static final byte[] NDEF_SELECT = {
-            (byte)0x00, // CLA	- Class - Class of instruction
-            (byte)0xa4, // Instruction byte (INS) for Select command
-            (byte)0x00, // Parameter byte (P1), select by identifier
-            (byte)0x0c, // Parameter byte (P1), select by identifier
-            (byte)0x02, // Lc field	- Number of bytes present in the data field of the command
-            (byte)0xE1, (byte)0x04 // file identifier of the NDEF file retrieved from the CC file
+        (byte)0x00, // CLA	- Class - Class of instruction
+        (byte)0xa4, // Instruction byte (INS) for Select command
+        (byte)0x00, // Parameter byte (P1), select by identifier
+        (byte)0x0c, // Parameter byte (P1), select by identifier
+        (byte)0x02, // Lc field	- Number of bytes present in the data field of the command
+        (byte)0xE1, (byte)0x04 // file identifier of the NDEF file retrieved from the CC file
     };
 
     private static final byte[] NDEF_READ_BINARY_NLEN = {
-            (byte)0x00, // Class byte (CLA)
-            (byte)0xb0, // Instruction byte (INS) for ReadBinary command
-            (byte)0x00, (byte)0x00, // Parameter byte (P1, P2), offset inside the CC file
-            (byte)0x02  // Le field
+        (byte)0x00, // Class byte (CLA)
+        (byte)0xb0, // Instruction byte (INS) for ReadBinary command
+        (byte)0x00, (byte)0x00, // Parameter byte (P1, P2), offset inside the CC file
+        (byte)0x02  // Le field
     };
 
     private static final byte[] NDEF_READ_BINARY_GET_NDEF = {
-            (byte)0x00, // Class byte (CLA)
-            (byte)0xb0, // Instruction byte (INS) for ReadBinary command
-            (byte)0x00, (byte)0x00, // Parameter byte (P1, P2), offset inside the CC file
-            (byte)0x0f  //  Le field
+        (byte)0x00, // Class byte (CLA)
+        (byte)0xb0, // Instruction byte (INS) for ReadBinary command
+        (byte)0x00, (byte)0x02, // Parameter byte (P1, P2), offset inside the CC file
+        (byte)0x08  //  Le field
     };
 
     private static final byte[] A_OKAY = {
-            (byte)0x90,  // SW1	Status byte 1 - Command processing status
-            (byte)0x00   // SW2	Status byte 2 - Command processing qualifier
+        (byte)0x90,  // SW1	Status byte 1 - Command processing status
+        (byte)0x00   // SW2	Status byte 2 - Command processing qualifier
     };
 
     private static final byte[] NDEF_ID = {
-            (byte)0xE1,
-            (byte)0x04
+        (byte)0xE1,
+        (byte)0x04
     };
 
     private static final byte[] UNKNOWN_CMD_SW = {
@@ -257,7 +257,7 @@ public class MyHostApduService extends HostApduService {
 
     private void getData() {
         String data = IDWarehouse.GetID(this.getApplicationContext());
-        NDEF_BYTES = data.getBytes();
+        NDEF_BYTES = Util.HexStringToByteArray(data);
         NDEF_LEN = BigInteger.valueOf(NDEF_BYTES.length).toByteArray();
     }
 }

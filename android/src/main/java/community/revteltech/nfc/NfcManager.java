@@ -942,15 +942,17 @@ class NfcManager extends ReactContextBaseJavaModule implements ActivityEventList
     }
 
     @ReactMethod
-    public void startApduService() {
+    public void startApduService(Callback callback) {
         // Starting the host apdu service
         this.reactContext.startService(new Intent(this.reactContext, MyHostApduService.class));
+        callback.invoke();
     }
 
     @ReactMethod
-    public void stopApduService() {
+    public void stopApduService(Callback callback) {
         // Stopoing the host apdu service
         this.reactContext.stopService(new Intent(this.reactContext, MyHostApduService.class));
+        callback.invoke();
     }
 
     @Override

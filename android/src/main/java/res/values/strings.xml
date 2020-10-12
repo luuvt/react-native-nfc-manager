@@ -1,0 +1,4 @@
+<resources>
+    <string name="servicedesc">The Magical HCE Service</string>
+    <string name="aiddescription"> NFC service</string>
+</resources>
