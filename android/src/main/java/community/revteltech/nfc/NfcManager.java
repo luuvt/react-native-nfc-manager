@@ -131,6 +131,7 @@ class NfcManager extends ReactContextBaseJavaModule implements ActivityEventList
                 callback.invoke("You can only issue one request at a time");
             } else {
                 techRequest = new TagTechnologyRequest(techs.toArrayList(), callback);
+                Log.d(LOG_TAG, "--------------------");
             }
         }
     }
@@ -1007,6 +1008,18 @@ class NfcManager extends ReactContextBaseJavaModule implements ActivityEventList
                                 }
 
                                 if (nfcTag != null) {
+                                    if (techRequest != null) {
+                                        Log.d(LOG_TAG, "techRequest: " + techRequest.isConnected());
+                                        if (!techRequest.isConnected()) {
+                                            boolean result = techRequest.connect(tag);
+                                            if (result) {
+                                                techRequest.getPendingCallback().invoke(null, techRequest.getTechType());
+                                            } else {
+                                                techRequest.getPendingCallback().invoke("fail to connect tag");
+                                                techRequest = null;
+                                            }
+                                        }
+                                    }
                                     sendEvent("NfcManagerDiscoverTag", nfcTag);
                                 }
                             }
